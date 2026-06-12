@@ -1,5 +1,6 @@
 # Modeling Galaxy Evolution as a Function of Cosmic Time and Local Environment
 
+**Author:** Suhas Reddy  
 **Advisor:** Dr. Barbara Ryden  
 **Project type:** Undergraduate honors thesis / large-scale survey analysis / statistical modeling  
 
@@ -9,17 +10,17 @@ The project analyzes a cleaned sample of approximately **6.2 million galaxies** 
 
 The technical goal of this project is to convert a large observational survey catalog into a repeatable statistical workflow for measuring how the blue/red galaxy population boundary changes with redshift, luminosity, and local environment.
 
-The figure below shows the main structure this project models: two galaxy populations separated by a transition region.
+Figure 1 below shows the main structure this project models.
 
 <p align="center">
   <img src="figures/cmd.png" width="650"/>
 </p>
 
 <p align="center">
-  <sub><strong>Figure 1.</strong> Color–magnitude diagram for the galaxy sample, shown as a normalized 2D density distribution. Galaxy color is shown on the horizontal axis and intrinsic brightness on the vertical axis. The blue sequence appears on the left, while the red sequence appears on the right. The density scale is normalized so that the area under the distribution equals 1, as shown by the color bar. The transition region between the two populations is the green valley.</sub>
+  <sub><strong>Figure 1.</strong> Color–magnitude diagram for the galaxy sample, shown as a normalized 2D density distribution. Galaxy color is shown on the horizontal axis and intrinsic brightness on the vertical axis. The blue sequence appears as a dense region on the left, while the red sequence appears as a dense region on the right. The transition region between the two populations, where there is a relative deficit of galaxies, is the green valley.</sub>
 </p>
 
----
+___
 
 ## Project Summary
 
@@ -28,19 +29,21 @@ Galaxies are not distributed randomly in color–magnitude space. They tend to s
 - **Blue galaxies:** systems that are typically still forming stars and contain younger stellar populations
 - **Red galaxies:** systems that are typically older and less actively star-forming
 
-Between these groups is a transition region known as the **green valley**. Measuring this boundary helps quantify how galaxy populations evolve over time and how that evolution depends on environment.
+The space between these groups is known as the **green valley**. Galaxies in this region are often interpreted as systems that are in the process of shutting down star formation through a process called **quenching**. Measuring the green valley is therefore a way to study how galaxy populations change over time.
+
+A major question in extragalactic astronomy is what causes quenching. It may be driven by internal galaxy properties, local environment, cosmic time, or some combination of these factors. By measuring how the green-valley boundary changes with redshift and environment, this project tests which factors are most strongly associated with that transition.
 
 This project constructs a statistical green-valley divider using repeated two-component fits to galaxy color distributions. The divider is tracked across:
 
-- **Redshift:** used as a proxy for cosmic time
+- **Redshift:** used as a proxy for cosmic time, where redshift values increase as you go further back in time
 - **Absolute magnitude:** a measure of intrinsic galaxy brightness
-- **Local environment:** total stellar mass within a 2 Mpc radius around each galaxy
+- **Local environment:** total stellar mass within a 2 Mpc* radius around each galaxy
 
-The public version of this repository emphasizes the analysis workflow, statistical methodology, code structure, and selected results. Raw survey catalogs and large intermediate data products are not included.
+The public version of this repository emphasizes the analysis workflow, statistical methodology, and selected results. Raw survey catalogs and large intermediate data products are not included.
 
-<sub>1 Mpc, or one megaparsec, is approximately 3.26 million light-years.</sub>
+<sub>*1 Mpc, or one megaparsec, is approximately 3.26 million light-years.</sub>
 
----
+___
 
 ## Technical Project Design
 
@@ -60,9 +63,7 @@ The analysis has four main stages:
 4. **Trend analysis and validation**  
    The resulting divider measurements are compared across bins to quantify population-level trends. Diagnostic figures are used to inspect fit quality, divider placement, and consistency across the analysis grid.
 
-This design makes the project useful beyond its astronomy context: it is a repeatable workflow for extracting population boundaries from a large, noisy, high-dimensional observational dataset.
-
----
+___
 
 ## Key Results
 
@@ -70,23 +71,23 @@ This design makes the project useful beyond its astronomy context: it is a repea
 
 The green-valley divider changes with redshift, indicating that the boundary between blue and red galaxy populations evolves over cosmic time.
 
-At higher redshift, the divider is generally redder; equivalently, the boundary shifts blueward toward the present day. The size of this shift depends on galaxy luminosity.
+At higher redshift, the divider is generally redder. Equivalently, the boundary shifts blueward toward the present day. The size of this shift depends on galaxy luminosity.
 
 <p align="center">
   <img src="figures/dividerEvolution_Z.png" width="650"/>
 </p>
 
 <p align="center">
-  <sub><strong>Figure 2.</strong> Evolution of the green-valley divider with redshift. The plot shows how the fitted blue/red population boundary changes across cosmic time and luminosity. The trend indicates that the divider is not fixed: it evolves with redshift and depends on intrinsic brightness.</sub>
+  <sub><strong>Figure 2.</strong> Evolution of the green-valley divider with redshift. The plot shows how the fitted green valley divider changes across cosmic time and luminosity. The trend indicates that the divider is not fixed: it evolves with redshift and depends on intrinsic brightness.</sub>
 </p>
 
----
+___
 
 ### 2. Dependence on Local Environment
 
 At fixed redshift, galaxies in denser environments show a redder divider than galaxies in lower-density environments. This effect is stronger for lower-luminosity galaxies and weaker for more luminous galaxies.
 
-This suggests that local environment plays a measurable role in galaxy population evolution, especially for less luminous systems.
+This suggests that local environment plays a measurable role in galaxy population evolution, especially for smaller systems.
 
 <p align="center">
   <img src="figures/dividerEvolution_Rho.png" width="650"/>
@@ -96,7 +97,7 @@ This suggests that local environment plays a measurable role in galaxy populatio
   <sub><strong>Figure 3.</strong> Green-valley divider behavior across local-environment bins. Local environment is measured using the stellar mass of neighboring galaxies within a 2 Mpc radius. The comparison shows that denser environments are associated with a redder population boundary, particularly for lower-luminosity galaxies.</sub>
 </p>
 
----
+___
 
 ### 3. Joint Redshift and Environment Trends
 
@@ -112,12 +113,12 @@ This joint analysis tests whether the population boundary is driven only by cosm
   <sub><strong>Figure 4.</strong> Joint redshift and environment analysis of the green-valley divider. The figure compares divider behavior across both cosmic time and local stellar-mass density, showing how the population boundary changes when both variables are considered together.</sub>
 </p>
 
----
+___
 
 ## Dataset
 
 | Property | Description |
-|---|---|
+|___|___|
 | Survey | DESI Bright Galaxy Survey |
 | Initial catalog size | Approximately 6.34 million galaxies before final cleaning |
 | Cleaned analysis sample | Approximately 6.2 million galaxies |
@@ -128,7 +129,7 @@ This joint analysis tests whether the population boundary is driven only by cosm
 | Environment metric | Log total stellar mass of neighboring galaxies within 2 Mpc |
 | Computing environment | NERSC Perlmutter |
 
----
+___
 
 ## Methodology
 
@@ -136,9 +137,9 @@ This joint analysis tests whether the population boundary is driven only by cosm
 
 A color–magnitude diagram compares galaxy color against luminosity. In this project, galaxy color is measured using rest-frame **g−r color**, and luminosity is represented using **r-band absolute magnitude**.
 
-This representation reveals two broad galaxy populations: a blue population and a red population. The project focuses on measuring the statistical divider between them in a way that can be repeated across many redshift, luminosity, and environment bins.
+There are two broad galaxy populations in color-magnitude space: a blue squence and a red sequence. The project focuses on measuring the statistical divider between them in a way that can be repeated consistently across many redshift, luminosity, and environment bins.
 
----
+___
 
 ### Two-Component Color Distribution Modeling
 
@@ -147,17 +148,17 @@ Within each redshift, magnitude, and environment bin, the galaxy color distribut
 - one component representing the blue population
 - one component representing the red population
 
-This converts the visual separation in the color–magnitude diagram into a quantitative model. Rather than manually selecting a boundary, the project fits the population structure in each bin and uses the fitted distributions to derive the divider.
+This converts the visual separation in the color–magnitude diagram into a quantitative model.
 
 <p align="center">
   <img src="figures/dgFit_Row3.png" width="750"/>
 </p>
 
 <p align="center">
-  <sub><strong>Figure 5.</strong> Example two-component fits to galaxy color distributions. Each distribution is modeled as the sum of blue-population and red-population components, allowing the divider to be measured statistically rather than chosen by eye.</sub>
+  <sub><strong>Figure 5.</strong> Example two-component fits to galaxy color distributions across absolute-magnitude bins. In each panel, the dashed blue and red curves show the fitted blue-population and red-population components, respectively. The solid black curve shows the combined double-Gaussian model. The number of galaxies used in each fit is shown in the upper-left corner, and the corresponding absolute magnitude range is shown above each panel.</sub>
 </p>
 
----
+___
 
 ### Completeness–Reliability Optimization
 
@@ -185,10 +186,10 @@ In practical terms, the metric selects the divider that balances classification 
 </p>
 
 <p align="center">
-  <sub><strong>Figure 6.</strong> Example divider selection using the completeness–reliability objective. The final divider is chosen from the fitted population models to balance separation quality for the blue and red galaxy populations.</sub>
+  <sub><strong>Figure 6.</strong> Completeness–reliability divider selection across absolute-magnitude bins. This figure shows the same two-component fits as Figure 5, with the selected divider added as a green dashed line. The number of galaxies and tau value are shown in the upper-left corner, and the magnitude range is shown above each panel.</sub>
 </p>
 
----
+___
 
 ### Environment Binning
 
@@ -196,15 +197,15 @@ Local environment is quantified using the total stellar mass of neighboring gala
 
 The analysis compares divider behavior across environment bins so that galaxy evolution can be studied as a function of both cosmic time and local density. This helps test whether the blue/red population boundary depends only on redshift or whether a galaxy’s surroundings provide additional explanatory structure.
 
----
+___
 
 ### HPC Workflow
 
-The analysis was developed and run on the **Perlmutter supercomputer at the National Energy Research Scientific Computing Center** using Python scientific-computing tools.
+The analysis was developed and run on the **Perlmutter supercomputer at the National Energy Research Scientific Computing Center**.
 
 The workflow uses cached `.npz` outputs for expensive intermediate results. This avoids repeatedly recomputing binning, fitting, and plotting inputs during later stages of analysis. These cached outputs are not included in the public repository due to file size.
 
----
+___
 
 ## Repository Structure
 
@@ -216,10 +217,10 @@ The workflow uses cached `.npz` outputs for expensive intermediate results. This
 ├── AppendixD.py          # Diagnostic plots for model fits and divider behavior
 ├── Intro_Methods.ipynb   # Data selection, methodology, and pipeline walkthrough
 ├── Results.ipynb         # Result figures and analysis interpretation
-└── figures/              # Selected public-facing figures from the analysis
+└── figures/              # Selected figures from the analysis
 ```
 
----
+___
 
 ## Dependencies
 
@@ -235,7 +236,7 @@ pyarrow
 
 Depending on the execution environment, additional packages may be needed for notebook display, file-path management, or HPC-specific execution.
 
----
+___
 
 ## Data Availability and Reproducibility
 
@@ -245,7 +246,7 @@ The public version is intended to document the analysis workflow, statistical me
 
 Because the full processed dataset and cached intermediate files are not included, the repository should be treated as a public research-code and methodology repository rather than a fully self-contained reproducibility package.
 
----
+___
 
 ## Citation
 
