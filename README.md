@@ -14,7 +14,7 @@ The figure below shows the main structure this project models: two galaxy popula
 </p>
 
 <p align="center">
-  <em>Color–magnitude diagram for the galaxy sample. Each point represents a galaxy, with color on the horizontal axis and intrinsic brightness on the vertical axis. The two dense regions correspond to the blue star-forming population and the red quiescent population; the transition region between them is the green valley.</em>
+  <sub><strong>Figure 1.</strong> Color–magnitude diagram for the galaxy sample, shown as a normalized 2D density distribution. Galaxy color is shown on the horizontal axis and intrinsic brightness on the vertical axis. The blue sequence appears on the left, while the red sequence appears on the right. The density scale is normalized so that the area under the distribution equals 1, as shown by the color bar. The transition region between the two populations is the green valley.</sub>
 </p>
 ---
 
