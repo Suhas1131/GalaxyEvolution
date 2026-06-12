@@ -7,10 +7,15 @@ This repository contains public analysis code, selected figures, and methodology
 
 The project analyzes a cleaned sample of approximately **6.2 million galaxies** and builds a statistical boundary between two major galaxy populations: **blue, star-forming galaxies** and **red, quiescent galaxies**. In astronomy, the transition region between these populations is commonly called the **green valley**. The goal of this project is to measure how that boundary changes with redshift, luminosity, and local environment.
 
+The figure below shows the main structure this project models: two galaxy populations separated by a transition region.
+
 <p align="center">
   <img src="figures/cmd.png" width="650"/>
 </p>
 
+<p align="center">
+  <em>Color–magnitude diagram for the galaxy sample. Each point represents a galaxy, with color on the horizontal axis and intrinsic brightness on the vertical axis. The two dense regions correspond to the blue star-forming population and the red quiescent population; the transition region between them is the green valley.</em>
+</p>
 ---
 
 ## Project Summary
