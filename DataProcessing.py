@@ -91,7 +91,6 @@ def ReadFiles(FilePath):
         GalaxyMask = Metadata["SPECTYPE"] == "GALAXY"
 
         MetadataDf = pd.DataFrame({Col: Metadata[Col][GalaxyMask] for Col in MetadataCols})
-
         SpecphotDf = pd.DataFrame({Col: Specphot[Col] for Col in SpecphotCols})
 
     Data = MetadataDf.merge(SpecphotDf, on="TARGETID", how="inner")
