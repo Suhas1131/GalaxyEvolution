@@ -1,28 +1,49 @@
+"""
+Calculate CMD density grids and green-valley dividers across all redshift bins.
+
+This script reads the processed BGS dataset, computes color-magnitude density histograms in redshift bins, fits double-Gaussian color distributions across absolute-magnitude slices, and saves the cached outputs for plotting.
+
+Run DataProcessing.py and EnvironmentFeatures.py before running this script.
+"""
+
+# ----------------------------- LIBRARIES -----------------------------
+
+import time
 import numpy as np
 import pandas as pd
 import functions as fn
-import time
+
+# ----------------------------- PATHS -----------------------------
+
+InputPath = "data/BGS_data.parquet"
+OutputPath = "data/cmdZ_cache.npz"
+
+# ----------------------------- TIMER -----------------------------
 
 T0 = time.time()
-def stamp(msg):
-    dt = time.time() - T0
-    print(f"[{dt:7.1f}s] {msg}", flush=True)
 
-stamp("Loading data")
+def Stamp(Message):
+    """
+    Print elapsed runtime and status.
+    """
 
-filePath = "/pscratch/sd/s/suhas31/Data/BGS_data.parquet"
-data = pd.read_parquet(filePath)
+    TimeElapsed = time.time() - T0
+    print(f"[{TimeElapsed:7.1f}s] {Message}", flush=True)
 
-Z   = data["Z"].values
-M_r = data["M_r"].values
-gr  = data["gr"].values
+# ----------------------------- LOAD DATA -----------------------------
 
-# -----------------------------
-# Bin definitions
-# -----------------------------
+Stamp("Loading data")
 
-z_min, z_max, z_step = 0.0, 0.5, 0.025
-zBins = np.arange(z_min, z_max + z_step, z_step)
+Data = pd.read_parquet(InputPath)
+
+Z = Data["Z"].to_numpy()
+M_r = Data["M_r"].to_numpy()
+gr = Data["gr"].to_numpy()
+
+# ----------------------------- BIN DEFINITIONS -----------------------------
+
+zMin, zMax, zStep = 0.0, 0.5, 0.025
+zBins = np.arange(zMin, zMax + zStep, zStep)
 
 mrMin, mrMax = -24.0, -14.0
 grMin, grMax = -0.5, 1.75
@@ -35,109 +56,92 @@ mrStep = 0.2
 mrEdges = np.arange(mrMin, mrMax + mrStep, mrStep)
 mrCenters = (mrEdges[:-1] + mrEdges[1:]) / 2
 
-# -----------------------------
-# Containers
-# -----------------------------
+# ----------------------------- CONTAINERS -----------------------------
 
-h2d_list = []
-divider_points = []
-divider_mr = []
-alpha_vals = []
-counts = []
+h2dList = []  # Stores 2D histogram data
+dividerPoints = []  # Stores x-coordinates of dividers
+dividerMr = []  # Stores y-coordinates of dividers
+alphaVals = []  # Stores the slopes of the linear divider
+counts = []  # Stores the number of galaxies in each redshift slice
 
-stamp("Starting calculations")
+# ----------------------------- CALCULATIONS -----------------------------
 
 for iz in range(len(zBins) - 1):
 
-    z_lo = zBins[iz]
-    z_hi = zBins[iz + 1]
+    zLo = zBins[iz]
+    zHi = zBins[iz + 1]
 
-    stamp(f"Processing {z_lo:.3f} < z ≤ {z_hi:.3f}")
+    Stamp(f"Processing {zLo:.3f} < z <= {zHi:.3f}")
 
-    maskZ = (Z > z_lo) & (Z <= z_hi)
+    maskZ = (Z > zLo) & (Z <= zHi)
 
-    FigZ_Mr = M_r[maskZ]
-    FigZ_gr = gr[maskZ]
+    figZMr = M_r[maskZ]
+    figZgr = gr[maskZ]
 
-    counts.append(len(FigZ_gr))
+    counts.append(len(figZgr))
 
-    # -----------------------------
-    # Histogram
-    # -----------------------------
-
+    # Build CMD 2D histogram
     h2d, _, _ = np.histogram2d(
-        FigZ_gr,
-        FigZ_Mr,
+        figZgr,
+        figZMr,
         bins=[grBins, mrBins]
     )
 
-    h2d_list.append(h2d)
+    h2dList.append(h2d)
 
-    # -----------------------------
-    # Divider calculation
-    # -----------------------------
-
+    # Calculate dividers across absolute-magnitude slices
     dividers = []
     mrVals = []
     weights = []
 
     for mrCenter in mrCenters:
 
-        maskMr = (
-            (FigZ_Mr >= mrCenter - mrStep/2) &
-            (FigZ_Mr <  mrCenter + mrStep/2)
-        )
+        maskMr = (figZMr >= mrCenter - mrStep / 2) & (figZMr < mrCenter + mrStep / 2)
 
-        Nslice = np.count_nonzero(maskMr)
-        grVals = FigZ_gr[maskMr]
+        nSlice = np.count_nonzero(maskMr)
+        grVals = figZgr[maskMr]
 
         try:
+            binCenters, countsHist, dgFit, gauss1, gauss2, popt = fn.fitDoubleGauss(
+                grVals,
+                bins=np.linspace(grMin, grMax, 101)
+            )
 
-            binCenters, counts_hist, dgFit, gauss1, gauss2, popt = \
-                fn.fit_double_gauss(grVals, bins=np.linspace(grMin, grMax, 101))
+            xDiv, _ = fn.CR_Div(binCenters, gauss1, gauss2)
 
-            xDiv, _ = fn.CR_div(binCenters, gauss1, gauss2)
-
-            if xDiv is not None and np.isfinite(xDiv):
-
+            if np.isfinite(xDiv):
                 dividers.append(xDiv)
                 mrVals.append(mrCenter)
-                weights.append(Nslice)
+                weights.append(nSlice)
 
-        except:
+        except Exception:
             continue
 
-    divider_points.append(np.array(dividers))
-    divider_mr.append(np.array(mrVals))
+    dividerPoints.append(np.array(dividers))
+    dividerMr.append(np.array(mrVals))
 
     if len(dividers) >= 2:
-
         coefs = np.polyfit(mrVals, dividers, deg=1, w=weights)
-        alpha_vals.append(abs(coefs[0]))
+        alphaVals.append(abs(coefs[0]))
 
     else:
+        alphaVals.append(np.nan)
 
-        alpha_vals.append(np.nan)
+# ----------------------------- SAVE CACHE -----------------------------
 
-# -----------------------------
-# Save cache
-# -----------------------------
-
-stamp("Saving cache")
+Stamp("Saving cache")
 
 np.savez(
-    "/pscratch/sd/s/suhas31/numpyFiles/cmdZ_cache.npz",
+    OutputPath,
 
-    h2d_list = np.array(h2d_list),
-    divider_points = np.array(divider_points, dtype=object),
-    divider_mr = np.array(divider_mr, dtype=object),
-
-    alpha_vals = np.array(alpha_vals),
-    counts = np.array(counts),
-
-    zBins = zBins,
-    grBins = grBins,
-    mrBins = mrBins
+    h2dList=np.array(h2dList),
+    dividerPoints=np.array(dividerPoints, dtype=object),
+    dividerMr=np.array(dividerMr, dtype=object),
+    alphaVals=np.array(alphaVals),
+    counts=np.array(counts),
+    zBins=zBins,
+    grBins=grBins,
+    mrBins=mrBins
 )
 
-stamp("Done")
+Stamp("Done")
