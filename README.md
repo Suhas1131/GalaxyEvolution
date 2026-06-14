@@ -210,14 +210,15 @@ ___
 ## Repository Structure
 
 ```text
-├── functions.py          # Core helper functions for Gaussian fitting and divider optimization
-├── cmdZ_calc.py          # Color–magnitude divider analysis binned by redshift
-├── cmdEnv_calc.py        # Color–magnitude divider analysis binned by local environment
-├── cmdZxRho_calc.py      # Joint redshift × environment divider analysis
-├── AppendixD.py          # Diagnostic plots for model fits and divider behavior
-├── Intro_Methods.ipynb   # Data selection, methodology, and pipeline walkthrough
-├── Results.ipynb         # Result figures and analysis interpretation
-└── figures/              # Selected figures from the analysis
+├── DataProcessing.py         # Extracts DESI BGS records, applies quality filters, and derives color/magnitude features
+├── EnvironmentFeatures.py    # Computes neighbor-count and local stellar-mass-density features
+├── functions.py              # Core helper functions for Gaussian fitting and divider optimization
+├── cmdZ_calc.py              # Color–magnitude divider analysis binned by redshift
+├── cmdEnv_calc.py            # Color–magnitude divider analysis binned by local environment
+├── cmdZxRho_calc.py          # Joint redshift × environment divider analysis
+├── Intro_Methods.ipynb       # Data selection, methodology, and pipeline walkthrough
+├── Results.ipynb             # Result figures and analysis interpretation
+└── figures/                  # Selected figures from the analysis
 ```
 
 ___
@@ -234,7 +235,7 @@ matplotlib
 pyarrow
 ```
 
-Depending on the execution environment, additional packages may be needed for notebook display, file-path management, or HPC-specific execution.
+These dependencies are listed to document the computational environment used for the analysis. Because the public repository does not include the raw survey catalogs, processed parquet files, or cached intermediate outputs, the scripts are not expected to run end-to-end without access to equivalent data products and updated local paths.
 
 ___
 
