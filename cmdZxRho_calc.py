@@ -160,7 +160,6 @@ Stamp("Saving cache")
 
 np.savez(
     OutputPath,
-
     histCache=histCache,
     dividerXCache=np.array(dividerXCache, dtype=object),
     dividerMrCache=np.array(dividerMrCache, dtype=object),
@@ -171,4 +170,4 @@ np.savez(
     mrBins=mrBins
 )
 
-Stamp("Finished")
+Stamp("Done")

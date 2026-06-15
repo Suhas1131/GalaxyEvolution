@@ -1,9 +1,7 @@
 """
 Generate diagnostic divider plots across redshift and environment bins.
 
-This script reads the processed BGS dataset, fits double-Gaussian color
-distributions across absolute-magnitude slices, selects green-valley dividers,
-and saves one 50-panel diagnostic figure for each redshift/environment bin.
+This script reads the processed BGS dataset, fits double-Gaussian color distributions across absolute-magnitude slices, selects green-valley dividers, and saves one 50-panel diagnostic figure for each redshift/environment bin.
 
 Run DataProcessing.py and EnvironmentFeatures.py before running this script.
 """

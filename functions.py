@@ -1,6 +1,5 @@
 """
-Helper functions for fitting galaxy color distributions and selecting
-green-valley dividers.
+Helper functions for fitting galaxy color distributions and selecting green-valley dividers.
 """
 
 # ----------------------------- LIBRARIES -----------------------------

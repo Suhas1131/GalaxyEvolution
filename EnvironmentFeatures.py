@@ -1,9 +1,7 @@
 """
 Compute local-environment features for the BGS galaxy sample.
 
-This script reads the processed BGS dataset, computes 3D neighbor counts
-and neighboring stellar-mass density within fixed comoving radii, and saves the
-catalog with added environment columns.
+This script reads the processed BGS dataset, computes 3D neighbor counts and neighboring stellar-mass density within fixed comoving radii, and saves the catalog with added environment columns.
 
 Run DataProcessing.py before running this script.
 """

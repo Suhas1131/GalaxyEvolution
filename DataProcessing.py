@@ -1,12 +1,9 @@
 """
 Prepare the DESI BGS data used in the galaxy evolution analysis.
 
-This script extracts galaxy records from DESI FastSpecFit catalogs, applies
-basic quality filters, converts cosmology-dependent quantities to the Planck18
-convention, derives color/magnitude features, and saves the processed catalog.
+This script extracts galaxy records from DESI FastSpecFit catalogs, applies basic quality filters, converts cosmology-dependent quantities to the Planck18 convention, derives color/magnitude features, and saves the processed catalog.
 
-Raw DESI catalogs and generated parquet files are not included in this public
-repository. 
+Raw DESI catalogs and generated parquet files are not included in this public repository. 
 
 ** Update DesiDir and OutputPath before running. **
 
