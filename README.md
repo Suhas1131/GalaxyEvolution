@@ -210,16 +210,19 @@ ___
 ## Repository Structure
 
 ```text
-├── DataProcessing.py         # Extracts DESI BGS records, applies quality filters, and derives color/magnitude features
-├── EnvironmentFeatures.py    # Computes neighbor-count and local stellar-mass-density features
-├── functions.py              # Core helper functions for Gaussian fitting and divider optimization
-├── cmdZ_calc.py              # Color–magnitude divider analysis binned by redshift
-├── cmdRho_calc.py            # Color–magnitude divider analysis binned by local environment
-├── cmdZxRho_calc.py          # Joint redshift × environment divider analysis
-├── Intro_Methods.ipynb       # Data selection, methodology, and pipeline walkthrough
-├── Results.ipynb             # Result figures and analysis interpretation
-└── figures/                  # Selected figures from the analysis
+├── DataProcessing.py          # Extracts DESI BGS records, applies quality filters, and derives color/magnitude features
+├── EnvironmentFeatures.py     # Computes neighbor-count and local stellar-mass-density features
+├── functions.py               # Core helper functions for Gaussian fitting and divider optimization
+├── cmdZ_calc.py               # Color–magnitude divider analysis binned by redshift
+├── cmdRho_calc.py             # Color–magnitude divider analysis binned by local environment
+├── cmdZxRho_calc.py           # Joint redshift × environment divider analysis
+├── DividerFigures_Z.py        # Diagnostic double-Gaussian/divider plots across redshift bins
+├── DividerFigures_ZxRho.py    # Diagnostic double-Gaussian/divider plots across redshift and environment bins
+└── figures/                   # Selected figures from the analysis
 ```
+
+The public repository focuses on the script-based analysis workflow. The written thesis contains the full narrative introduction, methodology discussion, and results interpretation.
+
 
 ___
 
