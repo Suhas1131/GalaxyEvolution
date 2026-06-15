@@ -17,14 +17,14 @@ Figure 1 below shows the main structure this project models.
 </p>
 
 <p align="center">
-  <sub><strong>Figure 1.</strong> Color–magnitude diagram for the galaxy sample, shown as a normalized 2D density distribution. Galaxy color is shown on the horizontal axis and intrinsic brightness on the vertical axis. The blue sequence appears as a dense region on the left, while the red sequence appears as a dense region on the right. The transition region between the two populations, where there is a relative deficit of galaxies, is the green valley.</sub>
+  <sub><strong>Figure 1.</strong> Color-magnitude diagram for the galaxy sample, shown as a normalized 2D density distribution. Galaxy color is shown on the horizontal axis and intrinsic brightness on the vertical axis. The blue sequence appears as a dense region on the left, while the red sequence appears as a dense region on the right. The transition region between the two populations, where there is a relative deficit of galaxies, is the green valley.</sub>
 </p>
 
 ___
 
 ## Project Summary
 
-Galaxies are not distributed randomly in color–magnitude space. They tend to separate into two broad groups:
+Galaxies are not distributed randomly in color-magnitude space. They tend to separate into two broad groups:
 
 - **Blue galaxies:** systems that are typically still forming stars and contain younger stellar populations
 - **Red galaxies:** systems that are typically older and less actively star-forming
@@ -58,7 +58,7 @@ The analysis has four main stages:
    The sample is divided across redshift, luminosity, and environment bins. Within each bin, the galaxy color distribution is modeled as a two-component distribution representing the blue and red populations.
 
 3. **Adaptive divider selection**  
-   Instead of applying a fixed color cutoff, the green-valley divider is selected separately in each bin using a completeness–reliability objective. This makes the divider responsive to changes in galaxy population structure across redshift, luminosity, and environment.
+   Instead of applying a fixed color cutoff, the green-valley divider is selected separately in each bin using a completeness-reliability objective. This makes the divider responsive to changes in galaxy population structure across redshift, luminosity, and environment.
 
 4. **Trend analysis and validation**  
    The resulting divider measurements are compared across bins to quantify population-level trends. Diagnostic figures are used to inspect fit quality, divider placement, and consistency across the analysis grid.
@@ -124,7 +124,7 @@ ___
 | Cleaned analysis sample | Approximately 6.2 million galaxies |
 | Full redshift range considered | 0 < z ≤ 0.5 |
 | Primary results range | 0 < z ≤ 0.3 |
-| Main color diagnostic | Rest-frame g−r color |
+| Main color diagnostic | Rest-frame g-r color |
 | Luminosity measure | Rest-frame r-band absolute magnitude |
 | Environment metric | Log total stellar mass of neighboring galaxies within 2 Mpc |
 | Computing environment | NERSC Perlmutter |
@@ -133,11 +133,11 @@ ___
 
 ## Methodology
 
-### Color–Magnitude Diagrams
+### Color-Magnitude Diagrams
 
-A color–magnitude diagram compares galaxy color against luminosity. In this project, galaxy color is measured using rest-frame **g−r color**, and luminosity is represented using **r-band absolute magnitude**.
+A color-magnitude diagram compares galaxy color against luminosity. In this project, galaxy color is measured using rest-frame **g-r color**, and luminosity is represented using **r-band absolute magnitude**.
 
-There are two broad galaxy populations in color-magnitude space: a blue squence and a red sequence. The project focuses on measuring the statistical divider between them in a way that can be repeated consistently across many redshift, luminosity, and environment bins.
+There are two broad galaxy populations in color-magnitude space: a blue sequence and a red sequence. The project focuses on measuring the statistical divider between them in a way that can be repeated consistently across many redshift, luminosity, and environment bins.
 
 ___
 
@@ -148,7 +148,7 @@ Within each redshift, magnitude, and environment bin, the galaxy color distribut
 - one component representing the blue population
 - one component representing the red population
 
-This converts the visual separation in the color–magnitude diagram into a quantitative model.
+This converts the visual separation in the color-magnitude diagram into a quantitative model.
 
 <p align="center">
   <img src="figures/dgFit_Row3.png" width="750"/>
@@ -160,9 +160,9 @@ This converts the visual separation in the color–magnitude diagram into a quan
 
 ___
 
-### Completeness–Reliability Optimization
+### Completeness-Reliability Optimization
 
-After fitting the blue and red population components, the green-valley divider is selected by maximizing a completeness–reliability metric.
+After fitting the blue and red population components, the green-valley divider is selected by maximizing a completeness-reliability metric.
 
 The goal is to place the divider where it best separates the two modeled populations while minimizing cross-contamination between the blue and red groups.
 
@@ -186,7 +186,7 @@ In practical terms, the metric selects the divider that balances classification 
 </p>
 
 <p align="center">
-  <sub><strong>Figure 6.</strong> Completeness–reliability divider selection across absolute-magnitude bins. This figure shows the same two-component fits as Figure 5, with the selected divider added as a green dashed line. The number of galaxies and tau value are shown in the upper-left corner, and the magnitude range is shown above each panel.</sub>
+  <sub><strong>Figure 6.</strong> Completeness-reliability divider selection across absolute-magnitude bins. This figure shows the same two-component fits as Figure 5, with the selected divider added as a green dashed line. The number of galaxies and tau value are shown in the upper-left corner, and the magnitude range is shown above each panel.</sub>
 </p>
 
 ___
@@ -195,7 +195,7 @@ ___
 
 Local environment is quantified using the total stellar mass of neighboring galaxies within a projected radius of 2 Mpc.
 
-The analysis compares divider behavior across environment bins so that galaxy evolution can be studied as a function of both cosmic time and local density. This helps test whether the blue/red population boundary depends only on redshift or whether a galaxy’s surroundings provide additional explanatory structure.
+The analysis compares divider behavior across environment bins so that galaxy evolution can be studied as a function of both cosmic time and local density. This helps test whether the blue/red population boundary depends only on redshift or whether a galaxy's surroundings provide additional explanatory structure.
 
 ___
 
@@ -213,8 +213,8 @@ ___
 ├── DataProcessing.py          # Extracts DESI BGS records, applies quality filters, and derives color/magnitude features
 ├── EnvironmentFeatures.py     # Computes neighbor-count and local stellar-mass-density features
 ├── functions.py               # Core helper functions for Gaussian fitting and divider optimization
-├── cmdZ_calc.py               # Color–magnitude divider analysis binned by redshift
-├── cmdRho_calc.py             # Color–magnitude divider analysis binned by local environment
+├── cmdZ_calc.py               # Color-magnitude divider analysis binned by redshift
+├── cmdRho_calc.py             # Color-magnitude divider analysis binned by local environment
 ├── cmdZxRho_calc.py           # Joint redshift × environment divider analysis
 ├── DividerFigures_Z.py        # Diagnostic double-Gaussian/divider plots across redshift bins
 ├── DividerFigures_ZxRho.py    # Diagnostic double-Gaussian/divider plots across redshift and environment bins
