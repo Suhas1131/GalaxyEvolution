@@ -1,7 +1,7 @@
 """
-Calculate CMD density grids and green-valley dividers across all redshift bins.
+Calculate CMD density grids and green-valley dividers across environment bins.
 
-This script reads the processed BGS dataset, computes color-magnitude density histograms in redshift bins, fits double-Gaussian color distributions across absolute-magnitude slices, and saves the cached outputs for plotting.
+This script reads the processed BGS dataset, computes color-magnitude density histograms in local-environment bins, fits double-Gaussian color distributions across absolute-magnitude slices, and saves the cached outputs for plotting.
 
 Run DataProcessing.py and EnvironmentFeatures.py before running this script.
 """
@@ -16,7 +16,7 @@ import functions as fn
 # ----------------------------- PATHS -----------------------------
 
 InputPath = "data/BGS_data.parquet"
-OutputPath = "data/cmdZ_cache.npz"
+OutputPath = "data/cmdEnv_cache.npz"
 
 # ----------------------------- TIMER -----------------------------
 
@@ -39,11 +39,9 @@ Data = pd.read_parquet(InputPath)
 Z = Data["Z"].to_numpy()
 M_r = Data["M_r"].to_numpy()
 gr = Data["gr"].to_numpy()
+rho = Data["LogMstar_N_2Mpc"].to_numpy()
 
 # ----------------------------- BIN DEFINITIONS -----------------------------
-
-zMin, zMax, zStep = 0.0, 0.5, 0.025
-zBins = np.arange(zMin, zMax + zStep, zStep)
 
 mrMin, mrMax = -24.0, -14.0
 grMin, grMax = -0.5, 1.75
@@ -56,34 +54,50 @@ mrStep = 0.2
 mrEdges = np.arange(mrMin, mrMax + mrStep, mrStep)
 mrCenters = (mrEdges[:-1] + mrEdges[1:]) / 2
 
+# ----------------------------- ENVIRONMENT BINS -----------------------------
+
+mask0 = rho != 0
+
+# 9 equal percentile bins for galaxies with nonzero neighboring stellar mass
+percentiles = np.linspace(0, 100, 10)
+pEdges = np.percentile(rho[mask0], percentiles)
+
+nEnv = 10  # 1 no neighbor bin + 9 percentile bins
+
 # ----------------------------- CONTAINERS -----------------------------
 
 h2dList = []  # Stores 2D histogram data
 dividerPoints = []  # Stores x-coordinates of dividers
 dividerMr = []  # Stores y-coordinates of dividers
 alphaVals = []  # Stores the slopes of the linear divider
-counts = []  # Stores the number of galaxies in each redshift slice
+counts = []  # Stores the number of galaxies in each environment bin
 
 # ----------------------------- CALCULATIONS -----------------------------
 
-for iz in range(len(zBins) - 1):
+for j in range(nEnv):
+    Stamp(f"Processing environment bin {j + 1}/{nEnv}")
 
-    zLo = zBins[iz]
-    zHi = zBins[iz + 1]
+    # Select environment bin
+    if j == 0:
+        maskEnv = rho == 0
+    else:
+        lo = pEdges[j - 1]
+        hi = pEdges[j]
 
-    Stamp(f"Processing {zLo:.3f} < z <= {zHi:.3f}")
+        if j == 1:
+            maskEnv = (rho > 0) & (rho <= hi)
+        else:
+            maskEnv = (rho > lo) & (rho <= hi)
 
-    maskZ = (Z > zLo) & (Z <= zHi)
+    figMr = M_r[maskEnv]
+    figGr = gr[maskEnv]
 
-    figZMr = M_r[maskZ]
-    figZgr = gr[maskZ]
-
-    counts.append(len(figZgr))
+    counts.append(len(figGr))
 
     # Build CMD 2D histogram
     h2d, _, _ = np.histogram2d(
-        figZgr,
-        figZMr,
+        figGr,
+        figMr,
         bins=[grBins, mrBins]
     )
 
@@ -95,10 +109,10 @@ for iz in range(len(zBins) - 1):
     weights = []
 
     for mrCenter in mrCenters:
-        maskMr = (figZMr >= mrCenter - mrStep / 2) & (figZMr < mrCenter + mrStep / 2)
+        maskMr = (figMr >= mrCenter - mrStep / 2) & (figMr < mrCenter + mrStep / 2)
 
         nSlice = np.count_nonzero(maskMr)
-        grVals = figZgr[maskMr]
+        grVals = figGr[maskMr]
 
         try:
             binCenters, countsHist, dgFit, gauss1, gauss2, popt = fn.fitDoubleGauss(
@@ -137,9 +151,9 @@ np.savez(
     dividerMr=np.array(dividerMr, dtype=object),
     alphaVals=np.array(alphaVals),
     counts=np.array(counts),
-    zBins=zBins,
     grBins=grBins,
-    mrBins=mrBins
+    mrBins=mrBins,
+    pEdges=pEdges
 )
 
 Stamp("Done")

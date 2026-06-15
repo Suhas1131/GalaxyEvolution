@@ -214,7 +214,7 @@ ___
 ├── EnvironmentFeatures.py    # Computes neighbor-count and local stellar-mass-density features
 ├── functions.py              # Core helper functions for Gaussian fitting and divider optimization
 ├── cmdZ_calc.py              # Color–magnitude divider analysis binned by redshift
-├── cmdEnv_calc.py            # Color–magnitude divider analysis binned by local environment
+├── cmdRho_calc.py            # Color–magnitude divider analysis binned by local environment
 ├── cmdZxRho_calc.py          # Joint redshift × environment divider analysis
 ├── Intro_Methods.ipynb       # Data selection, methodology, and pipeline walkthrough
 ├── Results.ipynb             # Result figures and analysis interpretation

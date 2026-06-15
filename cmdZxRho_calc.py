@@ -1,30 +1,54 @@
+"""
+Calculate CMD density grids and green-valley dividers across redshift and environment bins.
+
+This script reads the processed BGS dataset, computes color-magnitude density histograms in joint redshift/environment bins, fits double-Gaussian color distributions across absolute-magnitude slices, and saves the cached outputs for plotting.
+
+Run DataProcessing.py and EnvironmentFeatures.py before running this script.
+"""
+
+# ----------------------------- LIBRARIES -----------------------------
+
+import time
 import numpy as np
 import pandas as pd
 import functions as fn
-import time
+
+# ----------------------------- PATHS -----------------------------
+
+InputPath = "data/BGS_data.parquet"
+OutputPath = "data/cmdZxRho_cache.npz"
+
+# ----------------------------- TIMER -----------------------------
 
 T0 = time.time()
-def stamp(msg):
-    dt = time.time() - T0
-    print(f"[{dt:7.1f}s] {msg}", flush=True)
 
-stamp("Loading data")
+def Stamp(Message):
+    """
+    Print elapsed runtime and status.
+    """
 
-filePath = "/pscratch/sd/s/suhas31/Data/BGS_data.parquet"
-data = pd.read_parquet(filePath)
+    TimeElapsed = time.time() - T0
+    print(f"[{TimeElapsed:7.1f}s] {Message}", flush=True)
 
-Z   = data["Z"].values
-M_r = data["M_r"].values
-gr  = data["gr"].values
-LogMstar_N_2Mpc = data["LogMstar_N_2Mpc"].values
+# ----------------------------- LOAD DATA -----------------------------
 
+Stamp("Loading data")
+
+Data = pd.read_parquet(InputPath)
+
+Z = Data["Z"].to_numpy()
+M_r = Data["M_r"].to_numpy()
+gr = Data["gr"].to_numpy()
+rho = Data["LogMstar_N_2Mpc"].to_numpy()
+
+# ----------------------------- BIN DEFINITIONS -----------------------------
 
 zMin, zMax, zStep = 0.0, 0.5, 0.025
 zEdges = np.arange(zMin, zMax + zStep, zStep)
 nZ = len(zEdges) - 1
 
-mrMin, mrMax, mrStep = -24., -14., 0.2
-mrEdges   = np.arange(mrMin, mrMax + mrStep, mrStep)
+mrMin, mrMax, mrStep = -24.0, -14.0, 0.2
+mrEdges = np.arange(mrMin, mrMax + mrStep, mrStep)
 mrCenters = 0.5 * (mrEdges[:-1] + mrEdges[1:])
 
 grMin, grMax = -0.5, 1.75
@@ -36,131 +60,115 @@ mrBins = np.linspace(mrMin, mrMax, numBins + 1)
 
 nEnv = 4
 
+# ----------------------------- CONTAINERS -----------------------------
 
-# STORAGE
-hist_cache = np.zeros((nZ, nEnv, numBins, numBins))
-divider_x_cache = [[None]*nEnv for _ in range(nZ)]
-divider_mr_cache = [[None]*nEnv for _ in range(nZ)]
-alpha_cache = np.zeros((nZ, nEnv))
-counts_cache = np.zeros((nZ, nEnv))
+histCache = np.zeros((nZ, nEnv, numBins, numBins))
+dividerXCache = [[None] * nEnv for _ in range(nZ)]
+dividerMrCache = [[None] * nEnv for _ in range(nZ)]
+alphaCache = np.zeros((nZ, nEnv))
+countsCache = np.zeros((nZ, nEnv))
 
-
-stamp("Starting calculations")
+# ----------------------------- CALCULATIONS -----------------------------
 
 for iz in range(nZ):
 
-    zlo, zhi = zEdges[iz], zEdges[iz+1]
+    zLo = zEdges[iz]
+    zHi = zEdges[iz + 1]
 
-    stamp(f"z bin {iz+1}/{nZ} : {zlo:.3f} < z ≤ {zhi:.3f}")
+    Stamp(f"z bin {iz + 1}/{nZ} : {zLo:.3f} < z <= {zHi:.3f}")
 
-    mZ = (zlo < Z) & (Z <= zhi)
+    maskZ = (zLo < Z) & (Z <= zHi)
 
-    gr_z  = gr[mZ]
-    Mr_z  = M_r[mZ]
-    rho_z = LogMstar_N_2Mpc[mZ]
+    grZ = gr[maskZ]
+    mrZ = M_r[maskZ]
+    rhoZ = rho[maskZ]
 
-    mask0_z = rho_z != 0
+    mask0Z = rhoZ != 0
 
-    p33 = np.percentile(rho_z[mask0_z], 33.3333333333)
-    p67 = np.percentile(rho_z[mask0_z], 66.6666666667)
-
+    p33 = np.percentile(rhoZ[mask0Z], 33.3333333333)
+    p67 = np.percentile(rhoZ[mask0Z], 66.6666666667)
 
     for j in range(nEnv):
-
         if j == 0:
-
-            gr_cell = gr_z[~mask0_z]
-            Mr_cell = Mr_z[~mask0_z]
-
+            grCell = grZ[~mask0Z]
+            mrCell = mrZ[~mask0Z]
         else:
-
-            rho_nz = rho_z[mask0_z]
-            gr_nz  = gr_z[mask0_z]
-            Mr_nz  = Mr_z[mask0_z]
+            rhoNz = rhoZ[mask0Z]
+            grNz = grZ[mask0Z]
+            mrNz = mrZ[mask0Z]
 
             if j == 1:
-                mEnv = rho_nz <= p33
+                maskEnv = rhoNz <= p33
             elif j == 2:
-                mEnv = (p33 < rho_nz) & (rho_nz <= p67)
+                maskEnv = (p33 < rhoNz) & (rhoNz <= p67)
             else:
-                mEnv = rho_nz > p67
+                maskEnv = rhoNz > p67
 
-            gr_cell = gr_nz[mEnv]
-            Mr_cell = Mr_nz[mEnv]
+            grCell = grNz[maskEnv]
+            mrCell = mrNz[maskEnv]
 
+        countsCache[iz, j] = len(grCell)
 
-        counts_cache[iz, j] = len(gr_cell)
-
-
-        # Histogram
+        # Build CMD 2D histogram
         h2d, _, _ = np.histogram2d(
-            gr_cell,
-            Mr_cell,
+            grCell,
+            mrCell,
             bins=[grBins, mrBins]
         )
 
-        hist_cache[iz, j] = h2d
+        histCache[iz, j] = h2d
 
-
-        # Divider
+        # Calculate dividers across absolute-magnitude slices
         dividers = []
-        Mr_vals = []
-        wts = []
+        mrVals = []
+        weights = []
         
-        for Mr_c in mrCenters:
+        for mrCenter in mrCenters:
+            maskMr = (mrCell >= mrCenter - mrStep / 2) & (mrCell < mrCenter + mrStep / 2)
+            nSlice = np.count_nonzero(maskMr)
         
-            mMr = (Mr_cell >= Mr_c - mrStep/2) & (Mr_cell < Mr_c + mrStep/2)
-            n_in = np.count_nonzero(mMr)
-        
-            grVals = gr_cell[mMr]
+            grVals = grCell[maskMr]
         
             try:
-                binCenters, counts, dgFit, gauss1, gauss2, popt = \
-                    fn.fit_double_gauss(grVals, bins=grEdges)
+                binCenters, countsHist, dgFit, gauss1, gauss2, popt = fn.fitDoubleGauss(
+                    grVals,
+                    bins=grEdges
+                )
         
-                xDiv, _ = fn.CR_div(binCenters, gauss1, gauss2)
+                xDiv, _ = fn.CR_Div(binCenters, gauss1, gauss2)
         
-                # keep ANY valid numeric result
                 if np.isfinite(xDiv):
-        
                     dividers.append(xDiv)
-                    Mr_vals.append(Mr_c)
-                    wts.append(n_in)
+                    mrVals.append(mrCenter)
+                    weights.append(nSlice)
         
             except Exception:
-                # only skip if the code actually crashes
                 continue
 
-
-        divider_x_cache[iz][j] = np.array(dividers)
-        divider_mr_cache[iz][j] = np.array(Mr_vals)
+        dividerXCache[iz][j] = np.array(dividers)
+        dividerMrCache[iz][j] = np.array(mrVals)
 
         if len(dividers) >= 2:
-
-            coefs = np.polyfit(Mr_vals, dividers, deg=1, w=wts)
-            alpha_cache[iz, j] = abs(coefs[0])
-
+            coefs = np.polyfit(mrVals, dividers, deg=1, w=weights)
+            alphaCache[iz, j] = abs(coefs[0])
         else:
+            alphaCache[iz, j] = np.nan
 
-            alpha_cache[iz, j] = np.nan
+# ----------------------------- SAVE CACHE -----------------------------
 
-# SAVE CACHE
-stamp("Saving cache")
+Stamp("Saving cache")
 
 np.savez(
-    "/pscratch/sd/s/suhas31/numpyFiles/cmdZxRho_cache.npz",
+    OutputPath,
 
-    hist_cache = hist_cache,
-
-    divider_x_cache = np.array(divider_x_cache, dtype=object),
-    divider_mr_cache = np.array(divider_mr_cache, dtype=object),
-
-    alpha_cache = alpha_cache,
-    counts_cache = counts_cache,
-
-    zEdges = zEdges,
-    grBins = grBins,
-    mrBins = mrBins
+    histCache=histCache,
+    dividerXCache=np.array(dividerXCache, dtype=object),
+    dividerMrCache=np.array(dividerMrCache, dtype=object),
+    alphaCache=alphaCache,
+    countsCache=countsCache,
+    zEdges=zEdges,
+    grBins=grBins,
+    mrBins=mrBins
 )
 
-stamp("Finished")
+Stamp("Finished")
