@@ -131,7 +131,6 @@ Stamp("Saving cache")
 
 np.savez(
     OutputPath,
-
     h2dList=np.array(h2dList),
     dividerPoints=np.array(dividerPoints, dtype=object),
     dividerMr=np.array(dividerMr, dtype=object),
