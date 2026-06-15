@@ -118,7 +118,7 @@ ___
 ## Dataset
 
 | Property | Description |
-|___|___|
+|---|---|
 | Survey | DESI Bright Galaxy Survey |
 | Initial catalog size | Approximately 6.34 million galaxies before final cleaning |
 | Cleaned analysis sample | Approximately 6.2 million galaxies |
