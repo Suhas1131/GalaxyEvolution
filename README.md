@@ -2,7 +2,6 @@
 
 **Author:** Suhas Reddy  
 **Advisor:** Dr. Barbara Ryden  
-**Project type:** Undergraduate honors thesis / large-scale survey analysis / statistical modeling  
 
 This repository contains public analysis code, selected figures, and methodology notes for a project studying how galaxy populations change across cosmic time and local environment using data from the DESI Bright Galaxy Survey.
 
@@ -230,13 +229,11 @@ ___
 
 The core analysis uses:
 
-```text
-numpy
-pandas
-scipy
-matplotlib
-pyarrow
-```
+- numpy
+- pandas
+- scipy
+- matplotlib
+- pyarrow
 
 These dependencies are listed to document the computational environment used for the analysis. Because the public repository does not include the raw survey catalogs, processed parquet files, or cached intermediate outputs, the scripts are not expected to run end-to-end without access to equivalent data products and updated local paths.
 
@@ -254,4 +251,4 @@ ___
 
 ## Citation
 
-Reddy, S. (2026). *The Evolution of Galaxy Color as a Function of Time and Local Environment*. Undergraduate Honors Thesis, The Ohio State University. Advisor: Prof. Barbara Ryden.
+Reddy, S. (2026). *The Evolution of Galaxy Color as a Function of Time and Local Environment*. Undergraduate Honors Thesis, The Ohio State University.
