@@ -203,7 +203,7 @@ ___
 
 The analysis was developed and run on the **Perlmutter supercomputer at the National Energy Research Scientific Computing Center**.
 
-The workflow uses cached `.npz` outputs for expensive intermediate results. This avoids repeatedly recomputing binning, fitting, and plotting inputs during later stages of analysis. These cached outputs are not included in the public repository due to file size.
+The workflow uses cached `.npz` outputs for computationally expensive intermediate results. This avoids repeatedly recomputing binning, fitting, and plotting inputs during later stages of analysis. These cached outputs are not included in the public repository due to file size.
 
 ___
 
